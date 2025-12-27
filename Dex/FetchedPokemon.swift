@@ -77,7 +77,6 @@ struct FetchedPokemon : Decodable {
             decodedStats.append(stat)
         }
 
-        types = try container.decode([String].self, forKey: .types)
         hp = decodedStats[0]
         attack = decodedStats[1]
         defense = decodedStats[2]
