@@ -8,13 +8,15 @@
 import CoreData
 
 struct PersistenceController {
+    //controls our database
     static let shared = PersistenceController()
 
+    // controls our sample database
     @MainActor
     static let preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
-        for _ in 0..<10 {
+        for _ in 0..<5 {
             let newItem = Item(context: viewContext)
             newItem.timestamp = Date()
         }
