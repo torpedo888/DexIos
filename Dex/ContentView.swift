@@ -17,7 +17,22 @@ struct ContentView: View {
 )
     private var pokedex: FetchedResults<Pokemon>
 
+    @State private var searchText: String = ""
+
     private let fetcher = FetchService()
+
+    private var dynamicPredicate: NSPredicate {
+        var predicates: [NSPredicate] = []
+
+        // search predicate a %@ - search term
+        if !searchText.isEmpty {
+            predicates.append(NSPredicate(format: "name CONTAINS[cd] %@", searchText))
+        }
+
+        // Filter by favourite
+
+        return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+    }
 
     var body: some View {
         NavigationStack {
@@ -45,6 +60,11 @@ struct ContentView: View {
                 }
             }
             .navigationTitle("Pokedex")
+            .searchable(text: $searchText, prompt: "Search a pokemon")
+            .autocorrectionDisabled()
+            .onChange(of: searchText) {
+                pokedex.nsPredicate = dynamicPredicate
+            }
             .navigationDestination(for: Pokemon.self) { pokemon in
                 Text(pokemon.name ?? "no name")
             }
