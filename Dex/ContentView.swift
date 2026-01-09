@@ -12,6 +12,8 @@ struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @StateObject private var vm: PokedexViewModel
 
+    @FetchRequest<Pokemon>(sortDescriptors: []) private var all
+
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \Pokemon.id, ascending: true)],
         animation: .default
@@ -43,7 +45,7 @@ struct ContentView: View {
     }
 
     var body: some View {
-        if pokedex.isEmpty{
+        if all.isEmpty{
             ContentUnavailableView {
                 Label("No pokemon", image: ".nopokemon")
             } description: {
@@ -63,10 +65,25 @@ struct ContentView: View {
                             NavigationLink(value: pokemon) {
                                 PokemonRow(pokemon: pokemon)
                             }
+                            .swipeActions (edge: .leading) {
+                                Button(pokemon.favourite ? "Remove from faourites" : "Add to favourites",
+                                       systemImage: "star") {
+                                    pokemon.favourite.toggle()
+
+                                    do {
+                                        try viewContext.save()
+                                    } catch {
+                                        print(error)
+                                    }
+                                }
+                            }
+                            .tint(pokemon.favourite ? .gray : .yellow)
                         }
 
                     } footer: {
-                        PokedexFooter(vm: vm)
+                        if all.count < 151 {
+                            PokedexFooter(vm: vm)
+                        }
                     }
                 }
                 .navigationTitle("Pokedex")

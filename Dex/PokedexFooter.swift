@@ -12,7 +12,7 @@ struct PokedexFooter: View {
     
     var body: some View {
         ContentUnavailableView {
-            Label("Missing pokemon", systemImage: ".nopokemon")
+            Label("Missing pokemon", image: ".nopokemon")
         } description: {
             Text("The fetch was interupted!\nFetch the rest of the pokemon.")
         } actions: {
