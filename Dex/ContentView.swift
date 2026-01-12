@@ -52,7 +52,7 @@ struct ContentView: View {
                 Text("There aren't any pokemmon yet. \nFetch some to get started!")
             } actions: {
                 Button("Fetch pokemon", systemImage: "antenna.radiowaves.left.and.right") {
-                    Task { await vm.getPokemon() }
+                    Task { await vm.getPokemon(from: Array(all)) }
                 }
                 .buttonStyle(.borderedProminent)
             }
@@ -82,7 +82,7 @@ struct ContentView: View {
 
                     } footer: {
                         if all.count < 151 {
-                            PokedexFooter(vm: vm)
+                            PokedexFooter(vm: vm, allPokemons: Array(all))
                         }
                     }
                 }

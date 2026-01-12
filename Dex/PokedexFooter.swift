@@ -9,7 +9,8 @@ import SwiftUI
 
 struct PokedexFooter: View {
     @StateObject var vm: PokedexViewModel
-    
+    let allPokemons: [Pokemon]
+
     var body: some View {
         ContentUnavailableView {
             Label("Missing pokemon", image: ".nopokemon")
@@ -17,7 +18,9 @@ struct PokedexFooter: View {
             Text("The fetch was interupted!\nFetch the rest of the pokemon.")
         } actions: {
             Button("Fetch pokemon", systemImage: "antenna.radiowaves.left.and.right") {
-                Task { await vm.getPokemon() }
+                Task {
+                    await vm.getPokemon(from: allPokemons)
+                }
             }
             .buttonStyle(.borderedProminent)
         }

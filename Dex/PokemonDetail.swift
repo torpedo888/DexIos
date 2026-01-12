@@ -23,7 +23,7 @@ struct PokemonDetail: View {
                     .shadow(color:.black, radius: 10)
 
                 AsyncImage(
-                    url: showShiny ? pokemon.shiny : pokemon.sprite
+                    url: showShiny ? pokemon.shinyURL : pokemon.spriteURL
                 ) { image in
                     image
                         .interpolation(.none) //megszunteti a pixelezodeset az image-nek

@@ -37,8 +37,8 @@ struct PokemonRow: View {
 
     private var spriteURL: URL? {
         // Adjust depending on your Core Data model type:
-        if let s = pokemon.sprite as? String { return URL(string: s) }
-        return pokemon.sprite as? URL
+        if let s = pokemon.spriteURL as? String { return URL(string: s) }
+        return pokemon.spriteURL as? URL
     }
 
     private var typeNames: [String] {
