@@ -34,6 +34,36 @@
             endingLineNumber = "74"
             landmarkName = "downloadAndSaveSprites(for:)"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "D3AE48D3-423A-4756-9984-9B9EA3BF9B8B - a2dc7f39936ae075"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Dex.PokedexViewModel.downloadAndSaveSprites(for: Swift.Array&lt;Dex.Pokemon&gt;) -&gt; ()"
+                  moduleName = "Dex.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/fbatorligeti/Documents/ios%20app%20course/Dex/Dex/PokedexViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "74"
+                  endingLineNumber = "74">
+               </Location>
+               <Location
+                  uuid = "D3AE48D3-423A-4756-9984-9B9EA3BF9B8B - 7ff87cb3317d5a27"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () async -&gt; () in Dex.PokedexViewModel.downloadAndSaveSprites(for: Swift.Array&lt;Dex.Pokemon&gt;) -&gt; ()"
+                  moduleName = "Dex.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/fbatorligeti/Documents/ios%20app%20course/Dex/Dex/PokedexViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "74"
+                  endingLineNumber = "74">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

@@ -22,18 +22,28 @@ struct PokemonDetail: View {
                     .scaledToFit()
                     .shadow(color:.black, radius: 10)
 
-                AsyncImage(
-                    url: showShiny ? pokemon.shinyURL : pokemon.spriteURL
-                ) { image in
-                    image
+                if pokemon.sprite == nil || pokemon.shinyURL == nil {
+                    AsyncImage(
+                        url: showShiny ? pokemon.shinyURL : pokemon.spriteURL
+                    ) { image in
+                        image
+                            .interpolation(.none) //megszunteti a pixelezodeset az image-nek
+                            .resizable()
+                            .scaledToFit()
+                            .padding(.top, 50)
+                            .shadow(color:.black, radius: 10)
+                    } placeholder: {
+                        ProgressView()
+                    }
+                } else {
+                    (showShiny ? pokemon.shinyImage : pokemon.spriteImage)
                         .interpolation(.none) //megszunteti a pixelezodeset az image-nek
                         .resizable()
                         .scaledToFit()
                         .padding(.top, 50)
                         .shadow(color:.black, radius: 10)
-                } placeholder: {
-                    ProgressView()
                 }
+
             }
 
             HStack {

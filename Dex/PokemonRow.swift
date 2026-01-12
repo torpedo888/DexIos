@@ -12,12 +12,24 @@ struct PokemonRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            AsyncImage(url: spriteURL) { image in
-                image.resizable().scaledToFit()
-            } placeholder: {
-                ProgressView()
+            if pokemon.sprite == nil {
+                        AsyncImage(url: spriteURL) { image in
+                            image.resizable().scaledToFit()
+                        } placeholder: {
+                            ProgressView()
+                        }
+                        .frame(width: 100, height: 100)
+            } else {
+                pokemon.spriteImage
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 100, height: 100)
+                    .onAppear {
+                        print("image from db: \(pokemon.id)")
+                    }
             }
-            .frame(width: 100, height: 100)
+
+
 
             VStack(alignment: .leading) {
                 HStack {
