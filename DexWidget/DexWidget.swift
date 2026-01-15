@@ -9,12 +9,30 @@ import WidgetKit
 import SwiftUI
 
 struct Provider: TimelineProvider {
+
+    var randomPokemon: Pokemon {
+        var results : [Pokemon] = []
+
+        do {
+            results = try PersistenceController().container.viewContext
+                .fetch(Pokemon.fetchRequest())
+        } catch {
+            print("Error: \(error)")
+        }
+
+        if let randomPokemon = results.randomElement() {
+            return randomPokemon
+        }
+
+        return PersistenceController.previewPokemon
+    }
+
     func placeholder(in context: Context) -> SimpleEntry {
         SimpleEntry.placeholder
     }
 
     func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {
-        let entry = SimpleEntry.placeholder
+        completion(SimpleEntry.placeholder)
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
@@ -22,12 +40,41 @@ struct Provider: TimelineProvider {
 
         // Generate a timeline consisting of five entries an hour apart, starting from the current date.
         let currentDate = Date()
-        for hourOffset in 0 ..< 5 {
-            let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
-            let entry = SimpleEntry.placeholder
+//        for hourOffset in 0 ..< 5 {
+//            let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
+//            let entry = SimpleEntry.placeholder
+//
+//            entries.append(entry)
+//        }
+        for secondOffset in 0..<10 {
+            let entryDate = Calendar.current.date(
+                byAdding: .second,
+                value: secondOffset * 2,
+                to: currentDate)!
+
+            let entryPokemon = randomPokemon
+
+            // Create real entries; if you want random, swap between two placeholders:
+//            let entry = (minuteffset % 2 == 0)
+//                ? SimpleEntry(date: entryDate, name: "bulbasaur", types: ["grass", "poison"], sprite: Image(.bulbasaur))
+//                : SimpleEntry(date: entryDate, name: "mew",       types: ["psychic"],        sprite: Image(.mew))
+            let entry = SimpleEntry(
+                date: entryDate,
+                name: entryPokemon.name!,
+                types: entryPokemon.types!,
+                sprite: entryPokemon.spriteImage
+            )
+
+            entries.append(entry) // <— You forgot this
         }
 
+        // Ensure at least one entry is <= now; we did that by starting at `currentDate`
+
         let timeline = Timeline(entries: entries, policy: .atEnd)
+        //completion(timeline)
+        // Request a new timeline after 1 hour (because we generated 60 entries)
+//        let refreshDate = Calendar.current.date(byAdding: .hour, value: 1, to: currentDate)!
+//        let timeline = Timeline(entries: entries, policy: .after(refreshDate))
         completion(timeline)
     }
 }

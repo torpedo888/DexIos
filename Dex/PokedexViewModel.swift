@@ -70,7 +70,7 @@ final class PokedexViewModel: ObservableObject {
         }
     }
 
-    func downloadAndSaveSprites(for pokemons: [Pokemon]) {
+    func downloadAndSaveSprites(for pokemons: [Pokemon]) async {
         Task {
             do {
                 for pokemon in pokemons {
