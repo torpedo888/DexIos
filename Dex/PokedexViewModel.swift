@@ -7,63 +7,54 @@
 
 
 import SwiftUI
-import CoreData
+import SwiftData
 
 @MainActor
 final class PokedexViewModel: ObservableObject {
    // private let fetcher: FetchService // your type
-    private let context: NSManagedObjectContext
+    private var context: ModelContext?
 
     private let fetcher = FetchService()
 
-    init(context: NSManagedObjectContext) {
-        self.context = context
+    func attach(context: ModelContext) { self.context = context }
+
+//    init(context: ModelContext) {
+//        self.context = context
+//    }
+
+    private var ctx: ModelContext {
+        guard let context = context else {
+            preconditionFailure("ModelContext not attached to PokedexViewModel. Call attach(context:) before use.")
+        }
+        return context
     }
 
-    func getPokemon(from all: [Pokemon]) async {
+    func getPokemon() async {
         // Load first generation
         for i in 1..<152 {
             do {
-                let fetched = try await fetcher.fetchPokemon(i)
+                let fetchedPokemon = try await fetcher.fetchPokemon(i)
 
-                let pokemon = Pokemon(context: context)
-                pokemon.id = fetched.id
-                pokemon.name = fetched.name
-                pokemon.types = fetched.types
-                pokemon.hp = fetched.hp
-                pokemon.attack = fetched.attack
-                pokemon.defense = fetched.defense
-                pokemon.specialAttack = fetched.specialAttack
-                pokemon.specialDefense = fetched.specialDefense
-                pokemon.speed = fetched.speed
-                pokemon.spriteURL = fetched.spriteURL
-                pokemon.shinyURL = fetched.shinyURL
-
-                // Save periodically to avoid memory spikes and speed up
-                if i % 10 == 0 {
-                    try context.save()
-                }
+                ctx.insert(fetchedPokemon)
             } catch {
                 print("Fetch error for \(i):", error)
             }
         }
 
-        do { try context.save() } catch { print("Final save error:", error) }
+        do { try ctx.save() } catch { print("Final save error:", error) }
 
         await storeSpritesMissingOnly()
     }
 
     /// Fetch only rows missing sprites, then download & save.
     func storeSpritesMissingOnly() async {
-        let request: NSFetchRequest<Pokemon> = Pokemon.fetchRequest()
-        request.predicate = NSCompoundPredicate(orPredicateWithSubpredicates: [
-            NSPredicate(format: "sprite == nil"),
-            NSPredicate(format: "shiny == nil")
-        ])
-        request.sortDescriptors = []
+        let descriptor = FetchDescriptor<Pokemon>(
+            predicate: #Predicate { $0.sprite == nil || $0.shiny == nil },
+            sortBy: [] // add SortDescriptor(\.id) if you want ordering
+        )
 
         do {
-            let pokemons = try context.fetch(request)
+            let pokemons = try ctx.fetch(descriptor)
             await downloadAndSaveSprites(for: pokemons)
         } catch {
             print("Error fetching missing sprites:", error)
@@ -76,13 +67,13 @@ final class PokedexViewModel: ObservableObject {
                 for pokemon in pokemons {
                     //data lekerdezese es letarolasa az url-bol .0 - ez a data .1 -ez lenne a response
                     pokemon.sprite = try await URLSession.shared
-                        .data(from: pokemon.spriteURL!).0
+                        .data(from: pokemon.spriteURL).0
                     pokemon.shiny = try await URLSession.shared
-                        .data(from: pokemon.shinyURL!).0
+                        .data(from: pokemon.shinyURL).0
 
-                    try context.save()
+                    try ctx.save()
 
-                    print("Stored sprites for \(pokemon.id) : \(pokemon.name!.capitalized)")
+                    print("Stored sprites for \(pokemon.id) : \(pokemon.name.capitalized)")
                 }
             }
             catch {
@@ -90,6 +81,4 @@ final class PokedexViewModel: ObservableObject {
             }
         }
     }
-
-
 }

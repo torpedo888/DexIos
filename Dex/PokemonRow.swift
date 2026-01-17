@@ -33,7 +33,7 @@ struct PokemonRow: View {
 
             VStack(alignment: .leading) {
                 HStack {
-                    Text(pokemon.name?.capitalized ?? "Unknown")
+                    Text(pokemon.name.capitalized ?? "Unknown")
                         .fontWeight(.bold)
 
                     if pokemon.favourite ?? false {
