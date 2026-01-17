@@ -40,26 +40,10 @@ struct ContentView: View {
 
     }
 
-    private var filtered: [Pokemon] {
-        pokedexAll.filter { p in
-                let matchesSearch = searchText.isEmpty || p.name.localizedStandardContains(searchText)
-                let matchesFav = !filterByFavourite || p.favourite
-                return matchesSearch && matchesFav
-            }
-        }
-
-
-    private var filteredPokemons: [Pokemon] {
-        pokedexAll.filter { p in
-            let matchesSearch = searchText.isEmpty || p.name.localizedStandardContains(searchText)
-            let matchesFav = !filterByFavourite || p.favourite
-            return matchesSearch && matchesFav
-        }
-    }
-
     var body: some View {
+        
         Group {
-            if filtered.isEmpty{
+            if pokedexAll.isEmpty{
                     ContentUnavailableView {
                         Label("No pokemon", image: ".nopokemon")
                     } description: {
@@ -79,7 +63,9 @@ struct ContentView: View {
                 NavigationStack {
                     List {
                         Section {
-                            ForEach(filteredPokemons, id: \.persistentModelID) { pokemon in
+                            ForEach((try? pokedexAll.filter(dynamicPredicate)) ??
+                                   pokedexAll
+                            ) { pokemon in
                                 NavigationLink(value: pokemon) {
                                     PokemonRow(pokemon: pokemon)
                                 }
