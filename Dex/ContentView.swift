@@ -118,8 +118,8 @@ struct ContentView: View {
         
 
 #Preview {
-    let context = PersistenceController.preview.container.viewContext
-    ContentView(context: context)
+  //  let context = PersistenceController.preview.container.viewContext
+    ContentView()
         .environment(
             \.managedObjectContext,
              PersistenceController.preview.container.viewContext
